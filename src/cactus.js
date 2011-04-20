@@ -5,30 +5,56 @@ Cactus.prototype.createStubBasedOn = function(template, stubFunction) {
     //console.log(typeof template);
     //console.log(template instanceof Function);
 
-    stubFunction = stubFunction || function() {};
+    stubFunction = stubFunction || function() {
+    };
     var stub = new Object();
 
     var items = template;
-    var checkHasOwnProperty = function(items, item){items.hasOwnProperty(item)}
-    if (template instanceof Function) {
-        items = template.prototype;
-        checkHasOwnProperty = function(items, item){items.prototype.hasOwnProperty(item)}
+    var checkHasOwnProperty = function(items, item) {
+        return items.hasOwnProperty(item)
     }
 
-        
-        for (item in template.prototype) {
-            if (template.prototype.hasOwnProperty(item) && item[0] !== "_") {
-                stub[item] = stubFunction;
-            }
+    if (template instanceof Function) {
+        items = template.prototype;
+        checkHasOwnProperty = function(items, item) {
+            return items.prototype.hasOwnProperty(item)
         }
-    } else {
-        for (item in template) {
-            if (template.hasOwnProperty(item) && item[0] !== "_") {
+    }
+
+    for (item in items) {
+        console.log(item);
+        console.log(typeof items[item]);
+
+        if (checkHasOwnProperty(template, item) && item[0] !== "_") {
+            if(typeof items[item] === "function"){
                 stub[item] = stubFunction;
+                continue;
             }
+            if(typeof items[item] === "number"){
+                stub[item] = 0;
+                continue;
+            }
+            if(typeof items[item] === "string"){
+                stub[item] = "";
+                continue;
+            }
+            if(typeof items[item] === "boolean"){
+                stub[item] = false;
+                continue;
+            }
+            if(typeof items[item] === "object" && items[item].length){
+                stub[item] = [];
+                continue;
+            }
+            if(typeof items[item] === "object" && !items[item].length){
+                stub[item] = {};
+                continue;
+            }
+            throw "I don't know how to handle " + item + ".";
         }
     }
 
     return stub;
 };
+
 

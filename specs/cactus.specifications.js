@@ -1,5 +1,5 @@
 describe("Cactus Specifications", function() {
-    describe("when creating a mock from a object", function() {
+    describe("when creating a stub from a object", function() {
 
         var cactus;
         var someObject;
@@ -13,29 +13,29 @@ describe("Cactus Specifications", function() {
             };
         });
 
-        it("the object members should be included in the mock", function() {
-            var mock = cactus.createStubBasedOn(someObject);
+        it("the object functions should be included in the stub", function() {
+            var stub = cactus.createStubBasedOn(someObject);
 
-            expect(mock.someFunction).toBeDefined();
+            expect(stub.someFunction).toBeDefined();
         });
 
-        it("the object members should be callable", function() {
-            var mock = cactus.createStubBasedOn(someObject);
+        it("the object functions should be callable", function() {
+            var stub = cactus.createStubBasedOn(someObject);
 
-            mock.someFunction();
+            stub.someFunction();
             expect(true).toBeTruthy();
         });
 
         it("it should be possible to set your own default stub function", function() {
             var callback = jasmine.createSpy();
-            var mock = cactus.createStubBasedOn(someObject, callback);
+            var stub = cactus.createStubBasedOn(someObject, callback);
 
-            mock.someFunction();
+            stub.someFunction();
             expect(callback).toHaveBeenCalled();
         });
     });
 
-    describe("when creating a mock from a function", function() {
+    describe("when creating a stub from a function", function() {
 
         var cactus;
         var SomeObject;
@@ -49,14 +49,14 @@ describe("Cactus Specifications", function() {
             };
         });
 
-        it("the function members should be included in the mock", function() {
-            var mock = cactus.createStubBasedOn(SomeObject);
+        it("the function functions should be included in the stub", function() {
+            var stub = cactus.createStubBasedOn(SomeObject);
 
-            expect(mock.someFunction).toBeDefined();
+            expect(stub.someFunction).toBeDefined();
         });
     });
 
-    describe("when creating a mock from a function which have private functions", function() {
+    describe("when creating a stub from a function which have private functions", function() {
 
         var cactus;
         var SomeObject;
@@ -70,14 +70,14 @@ describe("Cactus Specifications", function() {
             };
         });
 
-        it("the function members should be included in the mock", function() {
-            var mock = cactus.createStubBasedOn(SomeObject);
+        it("the private functions should be not be included in the stub", function() {
+            var stub = cactus.createStubBasedOn(SomeObject);
 
-            expect(mock._somePrivateFunction).toBeUndefined();
+            expect(stub._somePrivateFunction).toBeUndefined();
         });
     });
 
-    describe("when creating a mock from a object which is in a inheritance", function() {
+    describe("when creating a stub from a object which is in a inheritance", function() {
 
         var cactus;
         var SomeObject;
@@ -97,12 +97,59 @@ describe("Cactus Specifications", function() {
             };
         });
 
-        it("the inherit members should not be included in the mock", function() {
+        it("the inherit functions should not be included in the stub", function() {
             var someObject = new SomeObject();
 
-            var mock = cactus.createStubBasedOn(someObject);
+            var stub = cactus.createStubBasedOn(someObject);
 
-            expect(mock.someParentFunction).toBeUndefined();
+            expect(stub.someParentFunction).toBeUndefined();
+        });
+    });
+
+    describe("when creating a stub from a object", function() {
+
+        var cactus;
+        var SomeObject;
+
+        beforeEach(function() {
+            cactus = new Cactus();
+
+            SomeObject = function() { };
+            SomeObject.prototype.someNumberLiteral = 1;
+            SomeObject.prototype.someStringLiteral = "x";
+            SomeObject.prototype.someArray = [1,2];
+            SomeObject.prototype.someObject = {x:function(){}};
+            SomeObject.prototype.somebool = true;
+        });
+
+        it("all number literals should return zero", function() {
+            var stub = cactus.createStubBasedOn(SomeObject);
+
+            expect(stub.someNumberLiteral).toBe(0);
+        });
+
+        it("all string literals should return empty string", function() {
+            var stub = cactus.createStubBasedOn(SomeObject);
+
+            expect(stub.someStringLiteral).toBe("");
+        });
+
+        it("all array should return empty array", function() {
+            var stub = cactus.createStubBasedOn(SomeObject);
+
+            expect(stub.someArray).toEqual([]);
+        });
+
+        it("all objects should return empty objects", function() {
+            var stub = cactus.createStubBasedOn(SomeObject);
+
+            expect(stub.someNumberLiteral).toBe(0);
+        });
+
+        it("all bools should return false", function() {
+            var stub = cactus.createStubBasedOn(SomeObject);
+
+            expect(stub.somebool).toBe(false);
         });
     });
 });
