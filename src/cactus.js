@@ -2,19 +2,15 @@ var Cactus = function() {
 };
 
 Cactus.prototype.createStubBasedOn = function(template, stubFunction) {
-    //console.log(typeof template);
-    //console.log(template instanceof Function);
-
-    stubFunction = stubFunction || function() {
-    };
-    var stub = new Object();
+    stubFunction = stubFunction || function() {};
+    var stub = {};
 
     var items = template;
     var checkHasOwnProperty = function(items, item) {
         return items.hasOwnProperty(item)
     }
 
-    if (template instanceof Function) {
+    if (typeof(template) === "function") {
         items = template.prototype;
         checkHasOwnProperty = function(items, item) {
             return items.prototype.hasOwnProperty(item)
@@ -22,31 +18,29 @@ Cactus.prototype.createStubBasedOn = function(template, stubFunction) {
     }
 
     for (item in items) {
-        console.log(item);
-        console.log(typeof items[item]);
-
+        var typeOfItem = typeof items[item];
         if (checkHasOwnProperty(template, item) && item[0] !== "_") {
-            if(typeof items[item] === "function"){
+            if(typeOfItem  === "function"){
                 stub[item] = stubFunction;
                 continue;
             }
-            if(typeof items[item] === "number"){
+            if(typeOfItem  === "number"){
                 stub[item] = 0;
                 continue;
             }
-            if(typeof items[item] === "string"){
+            if(typeOfItem === "string"){
                 stub[item] = "";
                 continue;
             }
-            if(typeof items[item] === "boolean"){
+            if(typeOfItem === "boolean"){
                 stub[item] = false;
                 continue;
             }
-            if(typeof items[item] === "object" && items[item].length){
+            if(typeOfItem === "object" && items[item].length){
                 stub[item] = [];
                 continue;
             }
-            if(typeof items[item] === "object" && !items[item].length){
+            if(typeOfItem === "object" && !items[item].length){
                 stub[item] = {};
                 continue;
             }

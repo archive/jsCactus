@@ -43,10 +43,8 @@ describe("Cactus Specifications", function() {
         beforeEach(function() {
             cactus = new Cactus();
 
-            SomeObject = function() {
-            };
-            SomeObject.prototype.someFunction = function() {
-            };
+            SomeObject = function() {};
+            SomeObject.prototype.someFunction = function() {};
         });
 
         it("the function functions should be included in the stub", function() {
@@ -64,10 +62,8 @@ describe("Cactus Specifications", function() {
         beforeEach(function() {
             cactus = new Cactus();
 
-            SomeObject = function() {
-            };
-            SomeObject.prototype._somePrivateFunction = function() {
-            };
+            SomeObject = function() {};
+            SomeObject.prototype._somePrivateFunction = function() {};
         });
 
         it("the private functions should be not be included in the stub", function() {
@@ -85,16 +81,12 @@ describe("Cactus Specifications", function() {
         beforeEach(function() {
             cactus = new Cactus();
 
-            var SomeParentObject = function() {
-            };
-            SomeParentObject.prototype.someParentFunction = function() {
-            };
+            var SomeParentObject = function() {};
+            SomeParentObject.prototype.someParentFunction = function() {};
 
-            SomeObject = function() {
-            };
+            SomeObject = function() {};
             SomeObject.prototype = new SomeParentObject();
-            SomeObject.prototype.someFunction = function() {
-            };
+            SomeObject.prototype.someFunction = function() {};
         });
 
         it("the inherit functions should not be included in the stub", function() {
