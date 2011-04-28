@@ -5,46 +5,50 @@ Cactus.prototype.createStubBasedOn = function(template, stubFunction) {
     stubFunction = stubFunction || function() {};
     var stub = {};
 
-    var items = template;
-    var checkHasOwnProperty = function(items, item) {
-        return items.hasOwnProperty(item)
-    }
+    var members = template;
+    var isNotFromInheritance = function(members, member) {
+        return members.hasOwnProperty(member);
+    };
 
     if (typeof(template) === "function") {
-        items = template.prototype;
-        checkHasOwnProperty = function(items, item) {
-            return items.prototype.hasOwnProperty(item)
-        }
+        members = template.prototype;
+        isNotFromInheritance = function(members, member) {
+            return members.prototype.hasOwnProperty(member);
+        };
     }
 
-    for (item in items) {
-        var typeOfItem = typeof items[item];
-        if (checkHasOwnProperty(template, item) && item[0] !== "_") {
-            if(typeOfItem  === "function"){
-                stub[item] = stubFunction;
+    var isPublic = function(member){
+        return member[0] !== "_";    
+    };
+
+    for (var member in members) {
+        var typeOfmember = typeof members[member];
+        if (isNotFromInheritance(template, member) && isPublic(member)) {
+            if(typeOfmember  === "function"){
+                stub[member] = stubFunction;
                 continue;
             }
-            if(typeOfItem  === "number"){
-                stub[item] = 0;
+            if(typeOfmember  === "number"){
+                stub[member] = 0;
                 continue;
             }
-            if(typeOfItem === "string"){
-                stub[item] = "";
+            if(typeOfmember === "string"){
+                stub[member] = "";
                 continue;
             }
-            if(typeOfItem === "boolean"){
-                stub[item] = false;
+            if(typeOfmember === "boolean"){
+                stub[member] = false;
                 continue;
             }
-            if(typeOfItem === "object" && items[item].length){
-                stub[item] = [];
+            if(typeOfmember === "object" && members[member].length){ // array
+                stub[member] = [];
                 continue;
             }
-            if(typeOfItem === "object" && !items[item].length){
-                stub[item] = {};
+            if(typeOfmember === "object" && !members[member].length){
+                stub[member] = {};
                 continue;
             }
-            throw "I don't know how to handle " + item + ".";
+            throw "I don't know how to handle " + member + ".";
         }
     }
 
